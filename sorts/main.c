@@ -16,32 +16,14 @@
 #include "utils.h"
 #include "quicksort.h"
 #include "insertion.h"
+#include "heapsort.h"
 
-#define MIN_SPAN 50 // minimum span between elements swapped
-#define VAR 50 // variability span
 
-void skew(int *l, int n) {
-    int i, j;
-    i = 0;
-    j = n - 1;
-    while(i < j) {
-        swap(l, i, j);
-        i += MIN_SPAN + rand() % VAR;
-        j -= MIN_SPAN + rand() % VAR;
-    }
-}
-
-int* copy(int *l, int n) {
-    int i;
-    int *array = malloc(n * sizeof (int));
-    for(i = 0; i < n; i++) {
-        array[i] = l[i];
-    }
-    return array;
-}
-
+/*
+    Use function pointer to call sorting algorithm
+*/
 float benchmark(int *l, int n, void(*func)(int *, int, int)) {
-    int *sample = copy(l, n);
+    int *sample = copy_array(l, n);
     clock_t cycles, tick_count = clock(); // start
 
     func(sample, 0, n - 1);
@@ -49,31 +31,6 @@ float benchmark(int *l, int n, void(*func)(int *, int, int)) {
     cycles = clock() - tick_count; // stop
     free(sample);
 	return (float)cycles / (float)CLOCKS_PER_SEC;
-}
-
-int power(int base, int exp) {
-    int i;
-    int prod = 1;
-    if(exp == 0)
-        return 1;
-    for(i = 0; i < exp; i++) {
-        prod *= base;
-    }
-    return prod;
-}
-
-int parse_int(char *num) {
-    int i;
-    int exp = 0;
-    int sum = 0;
-    while(num[i++] != '\0') {}
-    i -= 2;
-    while(i >= 0) {
-        sum += ((int)num[i] - 48) * power(10, exp);
-        exp += 1;
-        i--;
-    }
-    return sum;
 }
 
 int main(int argc, char *argv[]) {
@@ -94,7 +51,7 @@ int main(int argc, char *argv[]) {
     for(i = 0; i < n; i++) {
         ascending[i] = i;
     }
-    skew(ascending, n);
+    skew_array(ascending, n);
 
     // initialize decending sample
     printf("Initialize descending sample\n");
@@ -102,17 +59,25 @@ int main(int argc, char *argv[]) {
     for(i = 0; i < n; i++) {
         descending[n - 1 - i] = i;
     }
-    skew(descending, n);
+    skew_array(descending, n);
 
 	printf("Quicksort Times:\n");
 	printf("    Random: %f\n", benchmark(random, n, quicksort));
 	printf("    Near Ascending Order: %f\n", benchmark(ascending, n, quicksort));
 	printf("    Near Descending Order: %f\n", benchmark(descending, n, quicksort));
 
+    /*
+    Fuck Insertion sort! It's too slow for large datasets (not surprisingly)
 	printf("Insertion Sort Times:\n");
 	printf("    Random: %f\n", benchmark(random, n, insertion));
 	printf("    Near Ascending Order: %f\n", benchmark(ascending, n, insertion));
 	printf("    Near Descending Order: %f\n", benchmark(descending, n, insertion));
+    */
+
+    printf("Heap Sort Times:\n");
+	printf("    Random: %f\n", benchmark(random, n, heapsort));
+	printf("    Near Ascending Order: %f\n", benchmark(ascending, n, heapsort));
+	printf("    Near Descending Order: %f\n", benchmark(descending, n, heapsort));
 
     return 0;
 }

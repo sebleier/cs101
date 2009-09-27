@@ -1,8 +1,7 @@
 #ifndef DATASTRUCTURES_HEAPS_BINARY_H
 #define DATASTRUCTURES_HEAPS_BINARY_H
-
-#define ARRAY_LIMIT 100
-
+#include <stdio.h>
+#include "../../sorts/utils.h"
 /*
     A Binary Heap implementation
 */
@@ -10,7 +9,7 @@
 /* Binary Heap struct with a length and set length array */
 struct BinaryHeap {
     int length;
-    int array[ARRAY_LIMIT];
+    int *array;
 };
 
 /* Returns 1 if length is zero */
@@ -60,15 +59,16 @@ int remove_min(struct BinaryHeap *bh) {
 }
 
 /* Forces the heap empty by setting length to zero */
-void make_empty(struct BinaryHeap *bh){{
+void make_empty(struct BinaryHeap *bh){
     bh->length = 0;
 }
 
 /* Builds the heap if the array was populated manually */
 void build_heap(struct BinaryHeap *bh) {
     int i;
-    for(i = bh->length / 2; i > 1; i-- )
+    for(i = bh->length / 2; i > 0; i-- ) {
         percolate_down(bh, i);
+    }
 }
 
 #endif
