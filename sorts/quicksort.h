@@ -1,3 +1,6 @@
+#ifndef SORTS_QUICKSORT_H
+#define SORTS_QUICKSORT_H
+
 #include "insertion.h"
 #include "utils.h"
 
@@ -44,8 +47,8 @@ void quicksort(int *l, int left, int right) {
         quicksort(l, i+1, right);
     }
     else
-        insertion_sort(l, left, right);
+        insertion(l, left, right);
     return;
 }
-
+#endif
 

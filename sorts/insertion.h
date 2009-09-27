@@ -6,7 +6,10 @@
         Worst Case: O(n^2)
         Best Case: O(n)
 */
-void insertion_sort(int *l, int left, int right) {
+#ifndef SORTS_INSERTION_H
+#define SORTS_INSERTION_H
+
+void insertion(int *l, int left, int right) {
     int i, p, tmp;
     for(p = left + 1; p <= right; p++) {
         tmp = l[p];
@@ -16,4 +19,6 @@ void insertion_sort(int *l, int left, int right) {
     }
     return;
 }
+
+#endif
 

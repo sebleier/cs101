@@ -15,6 +15,7 @@
 #include <time.h>
 #include "utils.h"
 #include "quicksort.h"
+#include "insertion.h"
 
 #define MIN_SPAN 50 // minimum span between elements swapped
 #define VAR 50 // variability span
@@ -30,11 +31,55 @@ void skew(int *l, int n) {
     }
 }
 
+int* copy(int *l, int n) {
+    int i;
+    int *array = malloc(n * sizeof (int));
+    for(i = 0; i < n; i++) {
+        array[i] = l[i];
+    }
+    return array;
+}
+
+float benchmark(int *l, int n, void(*func)(int *, int, int)) {
+    int *sample = copy(l, n);
+    clock_t cycles, tick_count = clock(); // start
+
+    func(sample, 0, n - 1);
+
+    cycles = clock() - tick_count; // stop
+    free(sample);
+	return (float)cycles / (float)CLOCKS_PER_SEC;
+}
+
+int power(int base, int exp) {
+    int i;
+    int prod = 1;
+    if(exp == 0)
+        return 1;
+    for(i = 0; i < exp; i++) {
+        prod *= base;
+    }
+    return prod;
+}
+
+int parse_int(char *num) {
+    int i;
+    int exp = 0;
+    int sum = 0;
+    while(num[i++] != '\0') {}
+    i -= 2;
+    while(i >= 0) {
+        sum += ((int)num[i] - 48) * power(10, exp);
+        exp += 1;
+        i--;
+    }
+    return sum;
+}
+
 int main(int argc, char *argv[]) {
     int i, j;
     clock_t tick_count, cycles;
-    int n = 20000000;
-
+    int n = parse_int(argv[1]);
     // initialize random sample
     printf("Initialize random sample\n");
     int *random = malloc(n * sizeof (int));
@@ -59,26 +104,15 @@ int main(int argc, char *argv[]) {
     }
     skew(descending, n);
 
-	tick_count = clock();
-    // timer started
-    quicksort(random, 0, n - 1);
-    // stop timer
-    cycles = clock() - tick_count;
-	printf("Random Time: %f\n", (float)cycles / (float)CLOCKS_PER_SEC);
+	printf("Quicksort Times:\n");
+	printf("    Random: %f\n", benchmark(random, n, quicksort));
+	printf("    Near Ascending Order: %f\n", benchmark(ascending, n, quicksort));
+	printf("    Near Descending Order: %f\n", benchmark(descending, n, quicksort));
 
-	tick_count = clock();
-    // timer started
-    quicksort(ascending, 0, n - 1);
-    // stop timer
-    cycles = clock() - tick_count;
-	printf("Near Ascending Order Time: %f\n", (float)cycles / (float)CLOCKS_PER_SEC);
-
-	tick_count = clock();
-    // timer started
-    quicksort(descending, 0, n - 1);
-    // stop timer
-    cycles = clock() - tick_count;
-	printf("Near Descending Order Time: %f\n", (float)cycles / (float)CLOCKS_PER_SEC);
+	printf("Insertion Sort Times:\n");
+	printf("    Random: %f\n", benchmark(random, n, insertion));
+	printf("    Near Ascending Order: %f\n", benchmark(ascending, n, insertion));
+	printf("    Near Descending Order: %f\n", benchmark(descending, n, insertion));
 
     return 0;
 }
