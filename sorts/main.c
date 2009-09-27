@@ -17,6 +17,7 @@
 #include "quicksort.h"
 #include "insertion.h"
 #include "heapsort.h"
+#include "mergesort.h"
 
 
 /*
@@ -78,6 +79,11 @@ int main(int argc, char *argv[]) {
 	printf("    Random: %f\n", benchmark(random, n, heapsort));
 	printf("    Near Ascending Order: %f\n", benchmark(ascending, n, heapsort));
 	printf("    Near Descending Order: %f\n", benchmark(descending, n, heapsort));
+
+	printf("Merge Sort Times:\n");
+	printf("    Random: %f\n", benchmark(random, n, mergesort));
+	printf("    Near Ascending Order: %f\n", benchmark(ascending, n, mergesort));
+	printf("    Near Descending Order: %f\n", benchmark(descending, n, mergesort));
 
     return 0;
 }
