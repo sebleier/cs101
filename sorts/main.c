@@ -18,6 +18,9 @@
 #include "insertion.h"
 #include "heapsort.h"
 #include "mergesort.h"
+#include "shell/shellsort.h"
+#include "shell/hibbard.h"
+#include "radix.h"
 
 
 /*
@@ -30,6 +33,7 @@ float benchmark(int *l, int n, void(*func)(int *, int, int)) {
     func(sample, 0, n - 1);
 
     cycles = clock() - tick_count; // stop
+    //print(sample, n);
     free(sample);
 	return (float)cycles / (float)CLOCKS_PER_SEC;
 }
@@ -85,6 +89,20 @@ int main(int argc, char *argv[]) {
 	printf("    Near Ascending Order: %f\n", benchmark(ascending, n, mergesort));
 	printf("    Near Descending Order: %f\n", benchmark(descending, n, mergesort));
 
+	printf("Shell Sort Times:\n");
+	printf("    Random: %f\n", benchmark(random, n, shellsort));
+	printf("    Near Ascending Order: %f\n", benchmark(ascending, n, shellsort));
+	printf("    Near Descending Order: %f\n", benchmark(descending, n, shellsort));
+
+	printf("Hibbard Shell Sort Times:\n");
+	printf("    Random: %f\n", benchmark(random, n, hibbard));
+	printf("    Near Ascending Order: %f\n", benchmark(ascending, n, hibbard));
+	printf("    Near Descending Order: %f\n", benchmark(descending, n, hibbard));
+
+    printf("Radix Sort Times:\n");
+	printf("    Random: %f\n", benchmark(random, n, radixsort));
+	printf("    Near Ascending Order: %f\n", benchmark(ascending, n, radixsort));
+	printf("    Near Descending Order: %f\n", benchmark(descending, n, radixsort));
     return 0;
 }
 
